@@ -1,0 +1,105 @@
+#Install sublime-text 3
+sudo add-apt-repository ppa:webupd8team/sublime-text-3
+sudo apt-get update
+sudo apt-get install sublime-text-installer
+
+# Install pip
+sudo apt-get install python-pip python-dev build-essential 
+sudo pip install --upgrade pip
+sudo pip install --upgrade virtualenv
+
+#Ipython
+sudo pip install ipython[all]
+
+#Git
+sudo apt-get install git
+
+#Numpy
+sudo pip install numpy
+
+#Install Scipy
+sudo apt-get install python python-dev libatlas-base-dev gcc gfortran g++
+sudo pip install scipy
+
+#Install Scikit-Image
+sudo apt-get install libfreetype6-dev libpng12-dev
+sudo pip install cython six matplotlib networkx pillow 
+sudo pip install scikit-image
+
+#Pandas
+sudo pip install numexpr bottleneck
+sudo pip install pandas
+
+#Gensim
+sudo pip install gensim
+
+# sklearn
+sudo pip install scikit-learn
+
+#Theano
+sudo apt-get install libatlas3gf-base libatlas-dev python-dev
+sudo pip install Theano
+
+# FOR THEANO with MULTICORE BLAS
+# http://deeplearning.net/software/theano/install_ubuntu.html#install-ubuntu
+# remove openblas if you installed it
+sudo apt-get remove libopenblas-base
+# Download the development version of OpenBLAS
+git clone git://github.com/xianyi/OpenBLAS
+cd OpenBLAS
+make FC=gfortran
+sudo make PREFIX=/usr/local/ install
+# Tell Theano to use OpenBLAS.
+# This works only for the current user.
+# Each Theano user on that computer should run that line.
+echo -e "\n[blas]\nldflags = -lopenblas\n" >> ~/.theanorc
+# add to ldconfig cache and check
+ldconfig
+ldconfig -p | grep openblas
+
+#Decaf
+sudo apt-get install mpich
+git clone https://github.com/UCB-ICSI-Vision-Group/decaf-release.git
+cd decaf-release
+### Need to change configuration in decaf/layers/cpp/Makefile 
+#### delete "-Wl" in the file 
+python setup.py install
+
+## Install Caffe withou GPU
+## Note : need to install protobuf from source or there will errors
+#pre-requisits for caffe
+sudo apt-get install libopenblas-dev
+## opencv 2.4 
+sudo apt-get install libopencv-dev
+## opencv 3.0, supported by caffe, see [link](http://rodrigoberriel.com/2014/10/installing-opencv-3-0-0-on-ubuntu-14-04/)
+sudo apt-get install libleveldb-dev libsnappy-dev libboost-all-dev libhdf5-serial-dev
+sudo apt-get install libgflags-dev libgoogle-glog-dev liblmdb-dev
+wget https://github.com/google/protobuf/releases/download/v2.6.1/protobuf-2.6.1.tar.gz
+tar -xvzf protobuf-2.6.1.tar.gz 
+cd protobuf-2.6.1/
+sudo apt-get install autoconf
+sudo apt-get install libtool
+./autogen.sh
+./configure
+make check
+sudo make install
+sudo ldconfig
+
+# install caffe
+git clone https://github.com/BVLC/caffe.git
+cd caffe
+cp Makefile.config.example Makefile.config
+## uncomment the line "# CPU_ONLY := 1" in Makefile.config
+make all
+make test
+make runtest
+cd python/
+for req in $(cat requirements.txt); do sudo pip install $req; done
+cd ..
+## Open Makefile.config, change the path to arrayobject.h if necessary
+sudo make pycaffe
+# open .bashrc and add the following line
+export PYTHONPATH=/path/to/caffe/python:$PYTHONPATH
+
+
+
